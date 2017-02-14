@@ -1,4 +1,7 @@
-
+// find target
+// find empty
+// compare target to empty
+//
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -38,41 +41,62 @@ function setTiles(){
 
 }
 
+// function move(event){
+//   console.log(event.target.id)
+//   var box = event.target
+//   var strCoords = event.target.id
+//   var coords = [...event.target.id.split('-')].map(coord => parseInt(coord))
+//   console.log(coords)
+//   var slidable = canMove(coords)
+//   console.log("slidable", slidable)
+//   if(slidable){
+//     //moveRight(box, strCoords)
+//   }
+// }
+
+
 function move(event){
   console.log(event.target.id)
-  var box = event.target
-  var strCoords = event.target.id
-  var coords = [...event.target.id.split('-')].map(coord => parseInt(coord))
+  let tile = event.target
+  let strCoords = event.target.id
+  let coords = [...event.target.id.split('-')].map(coord => parseInt(coord))
   console.log(coords)
-  var slidable = canMove(coords)
+
+  let empty = document.getElementById("empty")
+  let emptyCoords = empty.className.split(" ")[1].split("-").map(coord => parseInt(coord))
+  let slidable = canMove(coords, emptyCoords)
   console.log("slidable", slidable)
   if(slidable){
-    moveRight(box, strCoords)
+    moveRight(...slidable, tile, strCoords)
+    resetClass(...slidable, tile, coords)
   }
 }
 
-function canMove(coords){
-  var empty = document.getElementById("empty")
-  console.log("empty", empty)
-  console.log(typeof empty.className)
-  var emptyCoords = empty.className.split(" ")[1].split("-").map(coord => parseInt(coord))
+function canMove(coords, emptyCoords){
   console.log(emptyCoords)
-  let y_dif = coords[0] - emptyCoords[0]
-  let x_dif = coords[1] - emptyCoords[1]
+  let y_dif = emptyCoords[0] - coords[0]
+  let x_dif = emptyCoords[1] - coords[1]
   if(y_dif && x_dif){
     alert("Can't move this square")
     return false
   }
-  return true
+  // can move along y-axis
+  else if(y_dif){
+    return (y_dif < 0 ? ["up", y_dif] : ["down", y_dif])
+  }
+  // can move along x-axis
+  else return (x_dif < 0 ? ["left", x_dif] : ["right", x_dif])
 }
 
-function moveRight(b, coords){
-  console.log("box", b)
-  console.log("coords: ", coords)
+function moveRight(dir, inc, b, strCoords){
+  console.log("b", b)
+  console.log("strCoords: ", strCoords)
   console.log(b.style)
   console.log("width: ", b.offsetWidth)
-  let box = $("#" + coords);
+  let box = $("#" + strCoords);
+  console.log("box", box)
   let width = box.outerWidth(true)
+
   b.style.transform = 'translateX(' + width + 'px)'
   document.getElementById("empty").className = "empty 3-2"
   console.log("class: ", document.getElementById("empty").className)
@@ -84,6 +108,19 @@ function moveRight(b, coords){
 
 //     box.addClass('left');
 // });
+}
+
+function resetClass(dir, inc, tile, coords){
+  if(dir === "up" || dir === "down"){
+    coords[0] += inc
+  }
+
+  else if(dir === "left" || dir === "right"){
+    coords[1] += inc
+  }
+
+  coords = coords.join("-").toString()
+  tile.id = coords
 }
 
 setTiles()
