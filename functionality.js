@@ -22,48 +22,62 @@ function shuffle(array) {
   return array;
 }
 
-function setTiles(){
-  var tiles = document.getElementsByClassName("square")
-  // console.log(tiles)
-  var myTiles = [...tiles]
-  // console.log("my: ", myTiles)
-  var tilesArr = Array.from(tiles)
-  // console.log(Array.isArray(tiles))
-  // console.log(tilesArr)
-  var shuffledNums = shuffle([1, 2, 3, 4, 5, 6, 7, 8])
-  for(let i = 0; i<8; i++){
 
-    myTiles[i].innerHTML = shuffledNums[i].toString()
-   
-    // tiles.innerHTML = shuffledNums.pop().toString()
-    // console.log(tile.innerHTML)
-  }
+// Modify this later to allow for different board sizes
+// Initialize board
+function setTiles(){
+
+  // Get all tiles
+  var tiles = document.getElementsByClassName("square")
+  var myTiles = [...tiles]
+
+  // Randomize the numbers to assign to tiles
+  var shuffledNums = shuffle([1, 2, 3, 4, 5, 6, 7, 8])
+
+  // Assign numbers to tiles
+  myTiles = myTiles.forEach(tile => tile.innerHTML = shuffledNums.pop().toString())
 
 }
 
-
+// When a tile is clicked, call "move"
 function move(event){
-  // console.log(event.target.id)
+
   let tile = event.target
   let strCoords = event.target.id
   let coords = [...event.target.id.split('-')].map(coord => parseInt(coord))
-  // console.log(coords)
+
 
   let empty = document.getElementById("empty")
   let emptyCoords = empty.className.split(" ")[1].split("-").map(coord => parseInt(coord))
+
+  // Check if a tile can be moved and in which direction
   let slidable = canMove(coords, emptyCoords)
   console.log("num to slide", slidable[2])
+
   if(slidable){
-    let tilesToSlide = [] 
-    if(slidable[2] > 1){
+    // Initialize array for sliding multiple tiles at once
+    let tilesToSlide = []
+    let dir = slidable[0]
+    let dirVector = slidable[1]
+    let numSlide = slidable[2]
+
+    if(numSlide > 1){
+      // Add tile that was clicked on
       tilesToSlide.push(tile)
-      for(let i = 1; i < slidable[2]; i++){
-        let siblingCoords = (slidable[0] === "left" || slidable[0] === "right") ? [coords[0], (coords[1] + (slidable[1]) * i)] : [(coords[0] + (slidable[1]) * i), coords[1]]
-        console.log("siblingCoords: ", siblingCoords)
+      for(let i = 1; i < numSlide; i++){
+
+        // Find coordinates of other tiles that need to be moved
+        let siblingCoords = (dir === "left" || dir === "right") ? [coords[0], (coords[1] + (dirVector * i))] : [(coords[0] + (dirVector * i)), coords[1]]
+        //console.log("siblingCoords: ", siblingCoords)
         siblingCoords = siblingCoords.join("-").toString()
+
+        // Find sibling tile and add to tilesToSlide
         tilesToSlide.push(document.getElementById(siblingCoords))
       }
-      console.log("TILES TO SLIDE: ", tilesToSlide)
+
+      // console.log("TILES TO SLIDE: ", tilesToSlide)
+
+      // Work backwards through tilesToSlide so that we do not have an infinite loop
       for(let i = tilesToSlide.length - 1; i >= 0; i--){
         move({target: tilesToSlide[i]})
       }
@@ -85,46 +99,32 @@ function canMove(coords, emptyCoords){
     alert("Can't move this square")
     return false
   }
-  // can move along y-axis
+  // Can move along y-axis
   else if(y_dif){
+    // If y_dif is less than 0, tile can move up (in negative direction)
     return (y_dif < 0 ? ["up", -1, Math.abs(y_dif)] : ["down", 1, Math.abs(y_dif)])
   }
-  // can move along x-axis
+  // Can move along x-axis
+  // If x_dif is less than 0 tile cab move left (in negative direction)
   else return (x_dif < 0 ? ["left", -1, Math.abs(x_dif)] : ["right", 1, Math.abs(x_dif)])
 }
 
 function moveDir(dir, inc, b, strCoords){
-  console.log("MOVE ", dir)
-  console.log("b", b)
-  console.log("strCoords: ", strCoords)
-  console.log("currTrans: ", b.style.transform)
+
+  // Find the tile using its id 
+  let tile = $("#" + strCoords);
+  // Find the tiles total width including margin
+  let width = tile.outerWidth(true) 
+
+  // Get the x and y coordinates currently applied to the div
   let currTrans = b.style.transform.split(" ")
-  console.log("currTrans: ", currTrans)
+
+  // Convert the current coordinates to an array of floats
   let transCoords = currTrans.map(element => parseFloat(element.match(/\-?\d+\.+\d+/g)))
 
-  //parseFloat(b.style.transform.match(/\-?\d+\.+\d+/g)) || 0
-  console.log("regex return: ", transCoords)
-  let box = $("#" + strCoords);
-  // console.log("box", box)
-  let width = box.outerWidth(true) 
+  // Initilialize translated coordinates to 0 if not currently set
   let moveX = transCoords[0] || 0;
   let moveY = transCoords[1] || 0;
-
-
- // could set var translate to translateX or translateY 
- // and var move to distance based on dir
- // then call b.style.transform once ?
-
-  // if(dir === "right"){
-  //   move = currTrans + width
-  //   b.style.transform = 'translateX(' + move + 'px)'
-  // }
-  // else if(dir === "left") {
-  //   console.log("in left")
-  //   move = currTrans - width
-  //   console.log("move distance: ", move)
-  //   b.style.transform = 'translateX(' + move + 'px)'
-  // }
 
 
   if(dir === "right" || dir === "left"){
@@ -138,15 +138,9 @@ function moveDir(dir, inc, b, strCoords){
 
   b.style.transform = 'translateX(' + moveX + 'px) translateY(' + moveY + 'px)'
 
-//   $(function() {
-// let box = $("#" + coords);
-// let width = box.outerWidth(true))
-//   console.log("found box: ", box)
-
-//     box.addClass('left');
-// });
 }
 
+// Helper function to reset the id on the moved tile and the class on the empty square
 function resetClass(dir, inc, tile, coords, empty, emptyCoords){
   if(dir === "up" || dir === "down"){
     coords[0] += inc
@@ -168,6 +162,8 @@ function resetClass(dir, inc, tile, coords, empty, emptyCoords){
 // might make more sense instead of converting to nums and incrementing back to string
 // we could pull the class/id off the element in string format and just swap them
 
+
+// Set up board
 setTiles()
 
 
