@@ -3,8 +3,19 @@
 // compare target to empty
 //
 
+let rows = 3
+let boardSize = 9
+let sizeClass = 3
+
+function setBoardSize(size){
+  rows = size;
+  boardSize = size * size;
+
+  setTiles()
+}
+
 function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+  let currentIndex = array.length, temporaryValue, randomIndex;
 
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
@@ -26,13 +37,31 @@ function shuffle(array) {
 // Modify this later to allow for different board sizes
 // Initialize board
 function setTiles(){
+  let nums = [...Array(boardSize).keys()].slice(1)
 
+  let board = document.getElementById("board")
+  
   // Get all tiles
-  var tiles = document.getElementsByClassName("square")
-  var myTiles = [...tiles]
+  for(let i = 1; i <= rows; i++){
+    for(let j = 1; j <= rows; j++){
+      if(i === rows && j === rows) break;
+      let square = document.createElement("DIV")
+      square.setAttribute("id",  i + '-' + j)
+      square.setAttribute("class", `${rows} square`)
+      square.addEventListener("click", move)
+      board.appendChild(square)
+    } 
+  }
+  let empty = document.createElement("DIV")
+  empty.setAttribute("id", "empty")
+  empty.setAttribute("class", "empty " + rows + "-" + rows)
+  board.appendChild(empty)
+  console.log("CONTAINER INNER HTML: ", board.innerHTML)
+  let tiles = document.getElementsByClassName("square")
+  let myTiles = [...tiles]
 
   // Randomize the numbers to assign to tiles
-  var shuffledNums = shuffle([1, 2, 3, 4, 5, 6, 7, 8])
+  let shuffledNums = shuffle(nums)
 
   // Assign numbers to tiles
   myTiles = myTiles.forEach(tile => tile.innerHTML = shuffledNums.pop().toString())
