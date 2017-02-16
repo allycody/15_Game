@@ -11,6 +11,8 @@ function setBoardSize(size){
   rows = size;
   boardSize = size * size;
 
+  document.getElementById("board").innerHTML = null
+
   setTiles()
 }
 
@@ -56,7 +58,6 @@ function setTiles(){
   empty.setAttribute("id", "empty")
   empty.setAttribute("class", "empty " + rows + "-" + rows)
   board.appendChild(empty)
-  console.log("CONTAINER INNER HTML: ", board.innerHTML)
   let tiles = document.getElementsByClassName("square")
   let myTiles = [...tiles]
 
@@ -144,12 +145,13 @@ function moveDir(dir, inc, b, strCoords){
   let tile = $("#" + strCoords);
   // Find the tiles total width including margin
   let width = tile.outerWidth(true) 
+  let height = tile.outerHeight(true)
 
   // Get the x and y coordinates currently applied to the div
   let currTrans = b.style.transform.split(" ")
 
   // Convert the current coordinates to an array of floats
-  let transCoords = currTrans.map(element => parseFloat(element.match(/\-?\d+\.+\d+/g)))
+  let transCoords = currTrans.map(element => parseFloat(element.match(/\-?\d+\.?\d+/g)))
 
   // Initilialize translated coordinates to 0 if not currently set
   let moveX = transCoords[0] || 0;
@@ -161,7 +163,7 @@ function moveDir(dir, inc, b, strCoords){
   }
 
   if(dir === "down" || dir === "up"){
-    moveY = dir === "down" ? (moveY + width) : (moveY - width) 
+    moveY = dir === "down" ? (moveY + height) : (moveY - height) 
   }
   console.log("TOTAL TRANS: ", 'translateX(' + moveX + 'px) translateY(' + moveY + 'px)')
 

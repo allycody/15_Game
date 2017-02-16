@@ -1,12 +1,22 @@
-
+.body{
+    height: 100%;
+    width: 100%;
+}
 .container {
-	width: 700px;
-	height: 700px;
+	width: 80vh;
+	height: 80vh;
 	background-color: black;
 	display: flex;   
     flex-wrap: wrap;
-	
+	border-radius: 5px;
 }
+
+/*@media only screen and (min-height: 0px){
+    .container{
+        height: 80vh;
+        width: auto;
+    }
+}*/
 
 .row {
 	width: 100%;
@@ -33,10 +43,10 @@
     float:left;
     background-color: gray;
     position: relative;
-
-    background-position:center center;
-    background-repeat:no-repeat;
-    background-size:cover; 
+    border-radius: 5px;
+    transition: all 0.3s;
+    text-align: center;
+    font-size: 120px;
 }
 
 .left {
