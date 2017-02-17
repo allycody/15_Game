@@ -47,6 +47,7 @@
     transition: all 0.3s;
     text-align: center;
     font-size: 120px;
+    vertical-align: middle;
 }
 
 .left {

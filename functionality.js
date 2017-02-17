@@ -17,8 +17,14 @@ function setBoardSize(size){
 }
 
 function shuffle(array) {
+
   let currentIndex = array.length, temporaryValue, randomIndex;
 
+  // If the number of rows is even and the empty square is in the last row
+  // the number of swaps we make in the array must be even
+  // but array.length is odd when rows is even
+  if(!rows%2) currentIndex ++
+  
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
 
@@ -144,6 +150,7 @@ function moveDir(dir, inc, b, strCoords){
   // Find the tile using its id 
   let tile = $("#" + strCoords);
   // Find the tiles total width including margin
+  
   let width = tile.outerWidth(true) 
   let height = tile.outerHeight(true)
 
