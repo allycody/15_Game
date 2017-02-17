@@ -8,12 +8,16 @@ let boardSize = 9
 let sizeClass = 3
 
 function setBoardSize(size){
-  rows = size;
-  boardSize = size * size;
 
-  document.getElementById("board").innerHTML = null
+  // Only reset size and recreate board if the number of rows changes
+  if(rows !== size){
+    rows = size;
+    boardSize = size * size;
 
-  setTiles()
+    document.getElementById("board").innerHTML = null
+
+    setTiles()
+  }
 }
 
 function shuffle(array) {
@@ -148,11 +152,16 @@ function canMove(coords, emptyCoords){
 function moveDir(dir, inc, b, strCoords){
 
   // Find the tile using its id 
-  let tile = $("#" + strCoords);
+  let tile = document.getElementById(strCoords)
+
   // Find the tiles total width including margin
-  
-  let width = tile.outerWidth(true) 
-  let height = tile.outerHeight(true)
+  let style = window.getComputedStyle(tile)
+  console.log("STYLE: ", parseFloat(style.width) + (2 * parseFloat(style.marginLeft)))
+
+  let width = parseFloat(style.width) + (2 * parseFloat(style.marginRight))
+  let height = parseFloat(style.height) + (2 * parseFloat(style.marginTop))
+
+  console.log("WIDTH: ", width)
 
   // Get the x and y coordinates currently applied to the div
   let currTrans = b.style.transform.split(" ")
