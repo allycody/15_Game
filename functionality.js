@@ -24,6 +24,7 @@ function setBoardSize(size){
 }
 
 function makeMove(neighbors){
+  // makes sure all neighbors of the empty sell are actually within the board boundaries
   let legitimateNeighbors = neighbors.filter(element => (element >= 0 && element < boardSize))
   let dir = Math.floor(Math.random() * 4)
   let tileInd = legitimateNeighbors[Math.floor(Math.random() * legitimateNeighbors.length)]
@@ -33,7 +34,6 @@ function makeMove(neighbors){
   let valA = shuffledNums[tileInd]
   shuffledNums[tileInd] = shuffledNums[emptyI]
   shuffledNums[emptyI] = valA
-  console.log("unsaved shuffle: ", shuffledNums)
   neighbors.forEach((element, i) => {neighbors[i] = neighbors[i] + spacesMoved})
   emptyI += spacesMoved
   //console.log("updated emptyI: ", emptyI)
@@ -69,28 +69,13 @@ function makeMove(neighbors){
 
 }
 
-function neighborsOfEmpty(){
-  let emptyI = nums.indexOf(0)
-  console.log("empty index", emptyI)
+function shuffle(numTimes = 40){
   let neighbors = [emptyI + 1, emptyI - 1, emptyI + rows, emptyI - rows]
-  return neighbors
-}
 
-function shuffle(numTimes = 30){
-  //let neighbors = neighborsOfEmpty()
-  
-  console.log("empty index", emptyI)
-  let neighbors = [emptyI + 1, emptyI - 1, emptyI + rows, emptyI - rows]
-  console.log("NEIGHBS: ", neighbors)
-  //console.log("LEGIT: ", legitimateNeighbors)
   while(numTimes > 0){
-    console.log("updated emptyI: ", emptyI)
-    console.log("NEIGHBORS UPDATED: ", neighbors)
     makeMove(neighbors)
     numTimes -- 
   }
-
-  console.log("SHUFFLED?", shuffledNums)
 
   return shuffledNums
 }
@@ -130,28 +115,29 @@ function shuffle(numTimes = 30){
 // Initialize board
 function setTiles(){
 
-  console.log("NUMS ARR: ", nums, Array.isArray(nums))
+
   // Randomize the numbers to assign to tiles
   let shuffledNums = shuffle()
   console.log("SUFFLED: ", shuffledNums)
-
   let board = document.getElementById("board")
   
+  board.innerHTML = null
   // Get all tiles
   for(let i = 0; i < rows; i++){
     for(let j = 0; j < rows; j++){
 
-      let square = document.createElement("DIV")
-      let num = shuffledNums[(j%rows) + (i*rows)]
-      let board = document.getElementById("board")
-      let width = parseFloat(window.getComputedStyle(board).width)/rows
+      let square = document.createElement("DIV");
+      let num = shuffledNums[(j%rows) + (i*rows)];
+      let board = document.getElementById("board");
+      let width = parseFloat(window.getComputedStyle(board).width)/rows;
 
-      console.log("NUM: ", num)
+
       if(num){
-        square.setAttribute("id",  `${i}-${j}`)
-        square.setAttribute("class", `${rows} square`)
-        square.setAttribute("style", `top: ${(i * width)}px; left: ${(j * width)}px;`)
-        square.addEventListener("click", move)
+        square.setAttribute("id",  `${i}-${j}`);
+        square.setAttribute("class", `${rows} square`);
+        square.setAttribute("style", `top: ${(i * width)}px; left: ${(j * width)}px;`);
+        square.addEventListener("click", move);
+        //square.innerHTML = `<div class='number'>${num}</div>`;
         square.innerHTML = num;
       }
 
@@ -183,10 +169,10 @@ function move(event){
 
   if(slidable){
     // Initialize array for sliding multiple tiles at once
-    let tilesToSlide = []
-    let dir = slidable[0]
-    let dirVector = slidable[1]
-    let numSlide = slidable[2]
+    let tilesToSlide = [];
+    let dir = slidable[0];
+    let dirVector = slidable[1];
+    let numSlide = slidable[2];
 
     if(numSlide > 1){
       // Add tile that was clicked on
@@ -211,11 +197,32 @@ function move(event){
     }
     else updateTiles(slidable.slice(0, 2), tile, strCoords, coords, empty, emptyCoords)
   }
+  if(checkSolved()){
+    setTimeout(() => alert("solved!"), 300)
+  }
 }
 
 function updateTiles(slidable, tile, strCoords, coords, empty, emptyCoords){
+    updateBoardArray(...slidable)
     moveDir(...slidable, tile, strCoords)
     resetClass(...slidable, tile, coords, empty, emptyCoords)
+}
+
+function updateBoardArray(dir, inc, tile){
+  console.log("NUMS before: ", shuffledNums)
+  let emptyI = shuffledNums.indexOf(0);
+  let swapIndex = dir === 'left' ? emptyI + 1 : (dir === 'right' ? emptyI - 1 : (dir === 'up' ? (emptyI + rows) : (emptyI - rows)))
+  shuffledNums[emptyI] = shuffledNums[swapIndex]
+  shuffledNums[swapIndex] = 0
+  console.log("NUMS After: ", shuffledNums) 
+}
+
+function checkSolved(){
+  console.log("checking!")
+  for(let i = 1; i < shuffledNums.length - 1; i++){
+    if(shuffledNums[i] < shuffledNums[i-1]) return false;
+  }
+  return true
 }
 
 function canMove(coords, emptyCoords){
@@ -240,15 +247,23 @@ function canMove(coords, emptyCoords){
 function moveDir(dir, inc, b, strCoords){
 
   // Find the tile using its id 
+  console.log("strCoords: ", strCoords)
   let tile = document.getElementById(strCoords)
+  console.log("TILE: ", tile)
 
 
   // Find the tiles total width and height including margin
   let style = window.getComputedStyle(tile)
-  let width = parseFloat(style.width) + (2 * parseFloat(style.marginRight))
-  let height = parseFloat(style.height) + (2 * parseFloat(style.marginTop))
+  let boardStyle = window.getComputedStyle(document.getElementById("board"))
+  console.log("PADDING: ", style.paddingRight)
+  // let width = parseFloat(style.width) + (2 * (parseFloat(style.marginRight) + parseFloat(style.paddingRight)))
+  // let height = parseFloat(style.height) + (2 * (parseFloat(style.marginTop) + parseFloat(style.paddingRight)))
+  let width = parseFloat(boardStyle.width) / rows;
+  let height = parseFloat(boardStyle.height) / rows;
 
   console.log("WIDTH: ", width)
+  console.log("HEIGHT: ", height)
+ 
 
   // Get the x and y coordinates currently applied to the div
   let currTrans = b.style.transform.split(" ")
@@ -274,7 +289,7 @@ function moveDir(dir, inc, b, strCoords){
 
 
   b.style.transform = 'translateX(' + moveX + 'px) translateY(' + moveY + 'px)'
-
+  
 }
 
 // Helper function to reset the id on the moved tile and the class on the empty square
