@@ -69,7 +69,7 @@ function makeMove(neighbors){
 
 }
 
-function shuffle(numTimes = 40){
+function shuffle(numTimes = 100){
   let neighbors = [emptyI + 1, emptyI - 1, emptyI + rows, emptyI - rows]
 
   while(numTimes > 0){
@@ -198,7 +198,8 @@ function move(event){
     else updateTiles(slidable.slice(0, 2), tile, strCoords, coords, empty, emptyCoords)
   }
   if(checkSolved()){
-    setTimeout(() => alert("solved!"), 300)
+    // setTimeout(() => alert("solved!"), 300)
+    setTimeout(alertSolved, 300)
   }
 }
 
@@ -223,6 +224,13 @@ function checkSolved(){
     if(shuffledNums[i] < shuffledNums[i-1]) return false;
   }
   return true
+}
+
+function alertSolved(){
+  let alertDiv = document.getElementById("solved-status")
+  console.log("is visible? ", alertDiv.style.visibility)
+  alertDiv.style.visibility = "visible";
+  setTimeout(()=>alertDiv.style.visibility = "hidden", 2000)
 }
 
 function canMove(coords, emptyCoords){

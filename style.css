@@ -9,6 +9,7 @@ body{
     height: 100%;
     margin: 0px;
     background-color: rgb(190, 229, 251);
+    z-index: 0;
 }
 
 .header{
@@ -33,7 +34,7 @@ body{
     margin-left: auto;
 	/*display: flex;   
     flex-wrap: wrap;*/
-	border-radius: 8px;
+	border-radius: 10px;
     position: relative;
 }
 
@@ -135,5 +136,24 @@ body{
 
 .button:active{
     border-style: inset none none inset;
+}
+
+#solved-status{
+    visibility: hidden;
+    z-index: 1;
+    position: absolute;
+    width: 600px;
+    height: 30px;
+    line-height: 30px;
+    /*margin: 0 calc((100%-100px)/2);*/
+    top: 260px;
+    font-size: 30px;
+    text-align: center;
+    color: rgb(231, 188, 148);
+    padding: 40px 0;
+    font-family: 'Quicksand', sans-serif;
+    left: calc(50vw - 300px);
+    background-color: rgba(18, 63, 115, 0.7);
+    border-radius: 8px;
 }
 
