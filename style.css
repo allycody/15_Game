@@ -164,18 +164,21 @@ body{
         height: 250px;
     }
     .\33{
+        width: 30%;
         height: 66px;
         padding: calc((30% - 66px)/2) 0;
         font-size: 66px;
         line-height: 66px;
     }
     .\34{
+        width: 22%;
         height: 50px;
         padding: calc((22% - 50px)/2) 0;
         font-size: 50px;
         line-height: 50px;
     }
     .\35{
+        width: 17%;
         height: 33px;
         padding: calc((17% - 33px)/2) 0;
         font-size: 33px;
