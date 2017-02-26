@@ -157,7 +157,7 @@ body{
     border-radius: 8px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 420px) {
     .container{
         width: 250px;
         height: 250px;
