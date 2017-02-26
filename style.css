@@ -109,7 +109,7 @@ body{
 }
 
 .size-buttons{
-    width: 470px;
+    width: 100%;
     padding: 30px 0 10px 0;
     display: flex;
     justify-content: center;
@@ -155,5 +155,30 @@ body{
     left: calc(50vw - 300px);
     background-color: rgba(18, 63, 115, 0.7);
     border-radius: 8px;
+}
+
+@media screen and (max-width: 320px) {
+    .container{
+        width: 250px;
+        height: 250px;
+    }
+    .\33{
+        height: 66px;
+        padding: calc((30% - 66px)/2) 0;
+        font-size: 66px;
+        line-height: 66px;
+    }
+    .\34{
+        height: 50px;
+        padding: calc((22% - 50px)/2) 0;
+        font-size: 50px;
+        line-height: 50px;
+    }
+    .\35{
+        height: 33px;
+        padding: calc((17% - 33px)/2) 0;
+        font-size: 33px;
+        line-height: 33px;
+    }
 }
 

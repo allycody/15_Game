@@ -278,12 +278,16 @@ function moveDir(dir, inc, b, strCoords){
 
 
   // Convert the current coordinates to an array of floats
-  let transCoords = currTrans.map(element => parseFloat(element.match(/\-?\d+\.?\d+/g)))
+  let transCoords = currTrans.map(element => parseFloat(element.match(/\-?\d+\.?\d+e?\-?\d+?px?/g)))
 
 
   // Initilialize translated coordinates to 0 if not currently set
   let moveX = transCoords[0] || 0;
   let moveY = transCoords[1] || 0;
+
+  console.log("moveX: ", moveX)
+  console.log("moveY: ", moveY)
+
 
 
   if(dir === "right" || dir === "left"){
