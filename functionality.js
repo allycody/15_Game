@@ -129,7 +129,9 @@ function setTiles(){
       let square = document.createElement("DIV");
       let num = shuffledNums[(j%rows) + (i*rows)];
       let board = document.getElementById("board");
+      // console.log("BOARD STYLE: ", window.getComputedStyle(board).width)
       let width = parseFloat(window.getComputedStyle(board).width)/rows;
+      // console.log("width when setting tiles: ", width)
 
 
       if(num){
@@ -210,16 +212,17 @@ function updateTiles(slidable, tile, strCoords, coords, empty, emptyCoords){
 }
 
 function updateBoardArray(dir, inc, tile){
-  console.log("NUMS before: ", shuffledNums)
+
   let emptyI = shuffledNums.indexOf(0);
   let swapIndex = dir === 'left' ? emptyI + 1 : (dir === 'right' ? emptyI - 1 : (dir === 'up' ? (emptyI + rows) : (emptyI - rows)))
   shuffledNums[emptyI] = shuffledNums[swapIndex]
   shuffledNums[swapIndex] = 0
-  console.log("NUMS After: ", shuffledNums) 
+
 }
 
+// check order of the numbers array to see if the board is solved
 function checkSolved(){
-  console.log("checking!")
+
   for(let i = 1; i < shuffledNums.length - 1; i++){
     if(shuffledNums[i] < shuffledNums[i-1]) return false;
   }
@@ -228,14 +231,12 @@ function checkSolved(){
 
 function alertSolved(){
   let alertDiv = document.getElementById("solved-status")
-  console.log("is visible? ", alertDiv.style.visibility)
   alertDiv.style.visibility = "visible";
   setTimeout(()=>alertDiv.style.visibility = "hidden", 2000)
 }
 
 function canMove(coords, emptyCoords){
-  console.log("empty coords: ", emptyCoords)
-  console.log("coords: ", coords)
+
   let y_dif = emptyCoords[0] - coords[0]
   let x_dif = emptyCoords[1] - coords[1]
   if(y_dif && x_dif){
@@ -255,7 +256,7 @@ function canMove(coords, emptyCoords){
 function moveDir(dir, inc, b, strCoords){
 
   // Find the tile using its id 
-  console.log("strCoords: ", strCoords)
+
   let tile = document.getElementById(strCoords)
   console.log("TILE: ", tile)
 
@@ -263,7 +264,7 @@ function moveDir(dir, inc, b, strCoords){
   // Find the tiles total width and height including margin
   let style = window.getComputedStyle(tile)
   let boardStyle = window.getComputedStyle(document.getElementById("board"))
-  console.log("PADDING: ", style.paddingRight)
+
   // let width = parseFloat(style.width) + (2 * (parseFloat(style.marginRight) + parseFloat(style.paddingRight)))
   // let height = parseFloat(style.height) + (2 * (parseFloat(style.marginTop) + parseFloat(style.paddingRight)))
   let width = parseFloat(boardStyle.width) / rows;
@@ -278,7 +279,7 @@ function moveDir(dir, inc, b, strCoords){
 
 
   // Convert the current coordinates to an array of floats
-  let transCoords = currTrans.map(element => parseFloat(element.match(/\-?\d+\.?\d+e?\-?\d+?px?/g)))
+  let transCoords = currTrans.map(element => parseFloat(element.match(/\-?\d+\.?\d+e?\-?\d*/g)))
 
 
   // Initilialize translated coordinates to 0 if not currently set
