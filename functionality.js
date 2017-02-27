@@ -240,7 +240,6 @@ function canMove(coords, emptyCoords){
   let y_dif = emptyCoords[0] - coords[0]
   let x_dif = emptyCoords[1] - coords[1]
   if(y_dif && x_dif){
-    alert("Can't move this square")
     return false
   }
   // Can move along y-axis
